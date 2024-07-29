@@ -55,14 +55,14 @@
     <div>
       <table>
         <caption>
-          Pending Buy Operation
+          Stock
         </caption>
         <thead>
           <th>action</th>
           <th>price</th>
         </thead>
         <tbody>
-          @for (operation of pendingBuyOrders(); track $index) {
+          @for (operation of stock(); track $index) {
           <tr>
             <td>{{ operation.action }}</td>
             <td>{{ operation.price }}</td>

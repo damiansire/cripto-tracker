@@ -38,7 +38,7 @@ export class ContinuousBuyingSellingComponent {
   money = 2600;
   orders = signal<Order[]>([]);
   pendingSellOrders = signal<SellOrder[]>([]);
-  pendingBuyOrders = signal<Operation[]>([]);
+  stock = signal<Operation[]>([]);
   historicalClosedPosition = signal<ClosedPosition[]>([]);
 
   portfolio = [];
@@ -116,7 +116,7 @@ export class ContinuousBuyingSellingComponent {
       action: 'buy',
       price: price,
     };
-    this.pendingBuyOrders.update((x) => [...x, operation]);
+    this.stock.update((x) => [...x, operation]);
     this.changeOrderStatus(price, false);
     const sellOrder: SellOrder = {
       price: price + 100,
@@ -126,6 +126,9 @@ export class ContinuousBuyingSellingComponent {
   sellCrypto(price: number) {
     this.pendingSellOrders.update((pendingSellOrders) =>
       pendingSellOrders.filter((order) => order.price !== price)
+    );
+    this.stock.update((stock) =>
+      stock.filter((order) => order.price !== price)
     );
     this.changeOrderStatus(price - 100, true);
     //Calculo el revenue y lo guardo
