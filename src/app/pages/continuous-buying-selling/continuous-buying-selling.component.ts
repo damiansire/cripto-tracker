@@ -13,10 +13,13 @@ import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 export class ContinuousBuyingSellingComponent {
   private csvDataService = inject(CsvDataService);
   ethereumData = signal<EthereumData[]>([]);
-
+  step = 0;
   ngOnInit() {
     this.csvDataService.getEthereumData().subscribe((data) => {
       this.ethereumData.set(data);
     });
+  }
+  nextStep() {
+    this.step++;
   }
 }

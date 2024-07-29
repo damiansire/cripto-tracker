@@ -23,7 +23,8 @@ export class CsvDataService {
   getEthereumData(): Observable<EthereumData[]> {
     return this.http
       .get('assets/criptos-history/ethereum.csv', { responseType: 'text' })
-      .pipe(map((csvData) => this.parseCsv(csvData)));
+      .pipe(map((csvData) => this.parseCsv(csvData)))
+      .pipe(map((ethereumData: EthereumData[]) => ethereumData.reverse()));
   }
 
   private parseCsv(csvData: string): EthereumData[] {
@@ -34,7 +35,7 @@ export class CsvDataService {
       const line = lines[index];
       const cleanLine = line.replace('\n', '');
       const values = cleanLine.split(';');
-      if (values.length != headers.length) {
+      if (values.length === headers.length) {
         const row = {
           timeOpen: new Date(parseInt(values[0], 10)),
           timeClose: new Date(parseInt(values[1], 10)),
