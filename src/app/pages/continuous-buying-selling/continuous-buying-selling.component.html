@@ -1,50 +1,75 @@
-@if (ethereumData().length > 0) {
-<p>Step actual: {{ step }}</p>
-<p>Dinero actual: {{ money }}</p>
-<p>Fecha: {{ ethereumData()[step].timeOpen }}</p>
-<p>Precio: {{ ethereumData()[step].priceLow }}</p>
-<p>Precio: {{ ethereumData()[step].priceHigh }}</p>
-}
-
 <div>
-  <table>
-    <caption>
-      Orders
-    </caption>
-    <thead>
-      <th>buildPrice</th>
-      <th>sellPrice</th>
-      <th>isPending</th>
-    </thead>
-    <tbody>
-      @for (order of orders; track $index) {
-      <tr>
-        <td>{{ order.buildPrice }}</td>
-        <td>{{ order.sellPrice }}</td>
-        <td>{{ order.isPending }}</td>
-      </tr>
-      }
-    </tbody>
-  </table>
-</div>
+  <div class="flex justify-around">
+    @if (ethereumData().length > 0) {
+    <p>Step actual: {{ step }}</p>
+    <p>Dinero actual: {{ money }}</p>
+    <p>Fecha: {{ ethereumData()[step].timeOpen | date : "dd/MM/yyyy" }}</p>
+    <p>Precio: {{ ethereumData()[step].priceLow | number : "1.0-0" }}</p>
+    <p>Precio: {{ ethereumData()[step].priceHigh | number : "1.0-0" }}</p>
 
-<button
-  (click)="nextStep()"
-  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
->
-  Siguiente
-  <svg
-    class="w-4 h-4 ml-2"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 5l7 7-7 7"
-    ></path>
-  </svg>
-</button>
+    <button
+      (click)="nextStep()"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+    >
+      Siguiente
+      <svg
+        class="w-4 h-4 ml-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"
+        ></path>
+      </svg>
+    </button>
+
+    }
+  </div>
+  <section class="flex">
+    <div>
+      <table>
+        <caption>
+          Orders
+        </caption>
+        <thead>
+          <th>buildPrice</th>
+          <th>sellPrice</th>
+          <th>isPending</th>
+        </thead>
+        <tbody>
+          @for (order of orders(); track $index) {
+          <tr>
+            <td>{{ order.buyPrice }}</td>
+            <td>{{ order.sellPrice }}</td>
+            <td>{{ order.isPending }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table>
+        <caption>
+          Historical Operation
+        </caption>
+        <thead>
+          <th>action</th>
+          <th>price</th>
+        </thead>
+        <tbody>
+          @for (operation of historicalOperations(); track $index) {
+          <tr>
+            <td>{{ operation.action }}</td>
+            <td>{{ operation.price }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
