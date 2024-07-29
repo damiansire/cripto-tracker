@@ -4,6 +4,7 @@ import { EthereumData, CsvDataService } from './csv-data.service';
 interface Order {
   sellPrice: number;
   buildPrice: number;
+  isPending: boolean;
 }
 
 @Component({
@@ -29,6 +30,7 @@ export class ContinuousBuyingSellingComponent {
       this.orders.push({
         sellPrice: 1000 + index * 100 + 100,
         buildPrice: 1000 + index * 100,
+        isPending: true,
       });
     }
   }
