@@ -1,5 +1,9 @@
 @if (ethereumData().length > 0) {
 <p>Step actual: {{ step }}</p>
+<p>Dinero actual: {{ money }}</p>
+<p>Fecha: {{ ethereumData()[step].timeOpen }}</p>
+<p>Precio: {{ ethereumData()[step].priceLow }}</p>
+<p>Precio: {{ ethereumData()[step].priceHigh }}</p>
 }
 
 <button
