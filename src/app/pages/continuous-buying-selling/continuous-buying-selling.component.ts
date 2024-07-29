@@ -8,6 +8,12 @@ interface Order {
   isPending: boolean;
 }
 
+interface ClosedPosition {
+  buyPrice: number;
+  sellPrice: number;
+  profit: number;
+}
+
 interface SellOrder {
   price: number;
 }
@@ -31,8 +37,10 @@ export class ContinuousBuyingSellingComponent {
   step = 132;
   money = 2600;
   orders = signal<Order[]>([]);
-  sellOrders = signal<SellOrder[]>([]);
-  historicalOperations = signal<Operation[]>([]);
+  pendingSellOrders = signal<SellOrder[]>([]);
+  pendingBuyOrders = signal<Operation[]>([]);
+  historicalClosedPosition = signal<ClosedPosition[]>([]);
+
   portfolio = [];
   lastData = { priceHigh: 0, priceLow: 0 };
   ngOnInit() {
@@ -75,15 +83,23 @@ export class ContinuousBuyingSellingComponent {
       currentIndex--;
     }
 
-    //Compro si sube
+    //Compro si sube, pero tambien vendo si sube
     currentIndex = Math.trunc(this.lastData.priceLow / 100);
     objetiveIndex = Math.trunc(newData.priceLow / 100);
 
     while (currentIndex < objetiveIndex) {
       const buyPrice = (currentIndex + 1) * 100;
+      //Verifico si se puede comprar algo
       const order = this.orders().find((x) => x.buyPrice === buyPrice);
       if (order?.isPending) {
         this.buyCrypto(buyPrice);
+      }
+      //Verifico si se puede vender algo
+      const pendingSellOrders = this.pendingSellOrders().find(
+        (x) => x.price === buyPrice
+      );
+      if (pendingSellOrders) {
+        this.sellCrypto(buyPrice);
       }
       currentIndex++;
     }
@@ -100,12 +116,26 @@ export class ContinuousBuyingSellingComponent {
       action: 'buy',
       price: price,
     };
-    this.historicalOperations.update((x) => [...x, operation]);
+    this.pendingBuyOrders.update((x) => [...x, operation]);
     this.changeOrderStatus(price, false);
     const sellOrder: SellOrder = {
       price: price + 100,
     };
-    this.sellOrders.update((x) => [...x, sellOrder]);
+    this.pendingSellOrders.update((x) => [...x, sellOrder]);
+  }
+  sellCrypto(price: number) {
+    this.pendingSellOrders.update((pendingSellOrders) =>
+      pendingSellOrders.filter((order) => order.price !== price)
+    );
+    this.changeOrderStatus(price - 100, true);
+    //Calculo el revenue y lo guardo
+    const profit = (100 / (price - 100)) * price - 100;
+    const newClosedPosition: ClosedPosition = {
+      buyPrice: price - 100,
+      sellPrice: price,
+      profit: profit,
+    };
+    this.historicalClosedPosition.update((x) => [...x, newClosedPosition]);
   }
   changeOrderStatus(price: number, newState: boolean) {
     this.orders.update((orders) =>

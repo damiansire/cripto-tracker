@@ -55,14 +55,14 @@
     <div>
       <table>
         <caption>
-          Historical Operation
+          Pending Buy Operation
         </caption>
         <thead>
           <th>action</th>
           <th>price</th>
         </thead>
         <tbody>
-          @for (operation of historicalOperations(); track $index) {
+          @for (operation of pendingBuyOrders(); track $index) {
           <tr>
             <td>{{ operation.action }}</td>
             <td>{{ operation.price }}</td>
@@ -74,15 +74,39 @@
     <div>
       <table>
         <caption>
-          Sell Orders
+          Pending Sell Orders
         </caption>
         <thead>
           <th>sell price</th>
         </thead>
         <tbody>
-          @for (sellOrder of sellOrders(); track $index) {
+          @for (sellOrder of pendingSellOrders(); track $index) {
           <tr>
             <td>{{ sellOrder.price }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table>
+        <caption>
+          Historical Closed Positions
+        </caption>
+        <thead>
+          <th>Buy Day</th>
+          <th>Buy Sell</th>
+          <th>Total Days Open</th>
+          <th>Buy Price</th>
+          <th>Sell Price</th>
+          <th>Revenue</th>
+        </thead>
+        <tbody>
+          @for (closedPosition of historicalClosedPosition(); track $index) {
+          <tr>
+            <td>{{ closedPosition.buyPrice }}</td>
+            <td>{{ closedPosition.sellPrice }}</td>
+            <td>{{ closedPosition.profit | number : "1.3-3" }}</td>
           </tr>
           }
         </tbody>
