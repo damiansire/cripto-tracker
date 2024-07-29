@@ -30,7 +30,7 @@
 
     }
   </div>
-  <section class="flex">
+  <section class="flex justify-around">
     <div>
       <table>
         <caption>
@@ -66,6 +66,23 @@
           <tr>
             <td>{{ operation.action }}</td>
             <td>{{ operation.price }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <table>
+        <caption>
+          Sell Orders
+        </caption>
+        <thead>
+          <th>sell price</th>
+        </thead>
+        <tbody>
+          @for (sellOrder of sellOrders(); track $index) {
+          <tr>
+            <td>{{ sellOrder.price }}</td>
           </tr>
           }
         </tbody>

@@ -8,6 +8,10 @@ interface Order {
   isPending: boolean;
 }
 
+interface SellOrder {
+  price: number;
+}
+
 interface Operation {
   action: 'buy' | 'sell';
   price: number;
@@ -27,6 +31,7 @@ export class ContinuousBuyingSellingComponent {
   step = 132;
   money = 2600;
   orders = signal<Order[]>([]);
+  sellOrders = signal<SellOrder[]>([]);
   historicalOperations = signal<Operation[]>([]);
   portfolio = [];
   lastData = { priceHigh: 0, priceLow: 0 };
@@ -97,6 +102,10 @@ export class ContinuousBuyingSellingComponent {
     };
     this.historicalOperations.update((x) => [...x, operation]);
     this.changeOrderStatus(price, false);
+    const sellOrder: SellOrder = {
+      price: price + 100,
+    };
+    this.sellOrders.update((x) => [...x, sellOrder]);
   }
   changeOrderStatus(price: number, newState: boolean) {
     this.orders.update((orders) =>
