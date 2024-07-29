@@ -70,14 +70,10 @@ export class ContinuousBuyingSellingComponent {
       currentIndex--;
     }
 
+    //Compro si sube
     currentIndex = Math.trunc(this.lastData.priceLow / 100);
     objetiveIndex = Math.trunc(newData.priceLow / 100);
 
-    //Math.trunc(this.lastData.priceLow / 100)
-    //eg: 2267 -> 22
-    //Math.trunc(newData.priceLow / 100) * 100 ;
-    //eg: 2449 -> 24
-    //Si el precio bajo mas de lo que estaba
     while (currentIndex < objetiveIndex) {
       const buyPrice = (currentIndex + 1) * 100;
       const order = this.orders().find((x) => x.buyPrice === buyPrice);
@@ -87,17 +83,11 @@ export class ContinuousBuyingSellingComponent {
       currentIndex++;
     }
 
-    /*
-    const menorCotaParaActual = Math.trunc(this.lastData.priceLow / 100) * 100;
-    const currentLowerPrice = Math.trunc(newData.priceLow / 100) * 100;
-    if (currentLowerPrice < whenBuy) {
-      //Evaluo si is pending de orden esta en true
-      const order = this.orders().find((x) => x.buyPrice === whenBuy);
-      if (order?.isPending) {
-        this.buyCrypto(whenBuy);
-      }
-    }
-      */
+    //Math.trunc(this.lastData.priceLow / 100)
+    //eg: 2267 -> 22
+    //Math.trunc(newData.priceLow / 100) * 100 ;
+    //eg: 2449 -> 24
+    //Si el precio bajo mas de lo que estaba
   }
   buyCrypto(price: number) {
     this.money -= 100;
@@ -106,9 +96,12 @@ export class ContinuousBuyingSellingComponent {
       price: price,
     };
     this.historicalOperations.update((x) => [...x, operation]);
+    this.changeOrderStatus(price, false);
+  }
+  changeOrderStatus(price: number, newState: boolean) {
     this.orders.update((orders) =>
       orders.map((order) =>
-        order.buyPrice === price ? { ...order, isPending: false } : order
+        order.buyPrice === price ? { ...order, isPending: newState } : order
       )
     );
   }
