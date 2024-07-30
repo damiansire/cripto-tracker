@@ -1,12 +1,14 @@
 <div>
   <div class="flex justify-around">
     @if (ethereumData().length > 0) {
-    <p>Step actual: {{ step }}</p>
+    <!-- <p>Step actual: {{ step }}</p> -->
     <p>Dinero actual: {{ money }}</p>
-    <p>Fecha: {{ ethereumData()[step].timeOpen | date : "dd/MM/yyyy" }}</p>
-    <p>Precio: {{ ethereumData()[step].priceLow | number : "1.0-0" }}</p>
-    <p>Precio: {{ ethereumData()[step].priceHigh | number : "1.0-0" }}</p>
-
+    <p>Fecha: {{ lastData().timeOpen | date : "dd/MM/yyyy" }}</p>
+    <p>Precio actual: {{ lastData().priceClose | number : "1.0-0" }}</p>
+    <p>Low: {{ lastData().priceLow | number : "1.0-0" }}</p>
+    <p>Higth: {{ lastData().priceHigh | number : "1.0-0" }}</p>
+    <p>Higth: {{ lastData().priceHigh | number : "1.0-0" }}</p>
+    <p>Profit: {{ profit() }}</p>
     <button
       (click)="nextStep()"
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
@@ -31,86 +33,60 @@
     }
   </div>
   <section class="flex justify-around">
-    <div>
-      <table>
-        <caption>
-          Orders
-        </caption>
-        <thead>
-          <th>buildPrice</th>
-          <th>sellPrice</th>
-          <th>isPending</th>
-        </thead>
-        <tbody>
-          @for (order of orders(); track $index) {
+    <section>
+      <p-table [value]="orders()">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
           <tr>
             <td>{{ order.buyPrice }}</td>
             <td>{{ order.sellPrice }}</td>
-            <td>{{ order.isPending }}</td>
+            <td>
+              <p-tag
+                [value]="order.status"
+                [severity]="
+                  order.status === 'pendingToBuy' ? 'success' : 'danger'
+                "
+              ></p-tag>
+            </td>
           </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <table>
-        <caption>
-          Stock
-        </caption>
-        <thead>
-          <th>action</th>
-          <th>price</th>
-        </thead>
-        <tbody>
-          @for (operation of stock(); track $index) {
+        </ng-template>
+      </p-table>
+    </section>
+    <section>
+      <p-table
+        [value]="historicalClosedPosition()"
+        [tableStyle]="{ 'min-width': '50rem' }"
+      >
+        <ng-template pTemplate="caption">
+          <div class="text-center">Historical Closed Positions</div>
+        </ng-template>
+        <ng-template pTemplate="header">
           <tr>
-            <td>{{ operation.action }}</td>
-            <td>{{ operation.price }}</td>
+            <th>Buy Date</th>
+            <th>Sell Date</th>
+            <th>Total Days Open</th>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>Revenue</th>
           </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <table>
-        <caption>
-          Pending Sell Orders
-        </caption>
-        <thead>
-          <th>sell price</th>
-        </thead>
-        <tbody>
-          @for (sellOrder of pendingSellOrders(); track $index) {
+        </ng-template>
+        <ng-template pTemplate="body" let-closedPosition>
           <tr>
-            <td>{{ sellOrder.price }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <table>
-        <caption>
-          Historical Closed Positions
-        </caption>
-        <thead>
-          <th>Buy Day</th>
-          <th>Buy Sell</th>
-          <th>Total Days Open</th>
-          <th>Buy Price</th>
-          <th>Sell Price</th>
-          <th>Revenue</th>
-        </thead>
-        <tbody>
-          @for (closedPosition of historicalClosedPosition(); track $index) {
-          <tr>
+            <td>{{ "23-07-01" }}</td>
+            <td>{{ "23-07-01" }}</td>
+            <td>{{ "8" }}</td>
             <td>{{ closedPosition.buyPrice }}</td>
             <td>{{ closedPosition.sellPrice }}</td>
             <td>{{ closedPosition.profit | number : "1.3-3" }}</td>
           </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        </ng-template>
+      </p-table>
+    </section>
   </section>
 </div>
